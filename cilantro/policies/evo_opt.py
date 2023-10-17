@@ -166,7 +166,7 @@ def _sample_according_to_exp_probs(vals, num_samples):
     norm_vals = (vals - mean_val) / std_val
     exp_vals = np.exp(norm_vals)
     prob_vals = exp_vals / exp_vals.sum()
-    logger.info('\nnum_vals: %s.\n prob_vals: %s.\n num_samples: %s.\n vals: %s.\n')
+    # logger.info('\nnum_vals: %s.\n prob_vals: %s.\n num_samples: %s.\n vals: %s.\n')
     sampled_idxs = np.random.choice(num_vals, size=(num_samples,), p=prob_vals,
                                     replace=to_replace_when_sampling)
     return sampled_idxs

@@ -135,9 +135,9 @@ class CilantroScheduler:
         start_time = time.time()
         new_allocation = self.policy.get_resource_allocation()  # dict {app_path: allocation}
         total_time = time.time() - start_time
-        logger.debug("Received new allocation from policy - %s", str(new_allocation))
+        logger.info("Received new allocation from policy - %s", str(new_allocation))
+        logger.info("Time taken to compute allocation - {:.4f}".format(total_time))
         if PERF_DEBUG:
-            logger.debug("Time taken to compute allocation - {:.4f}".format(total_time))
             # Append to time taken to file
             with open('/tmp/cilantro_perf.txt', 'a') as f:
                 f.write(f'{len(self.env.leaf_nodes)},{str(total_time)}\n')

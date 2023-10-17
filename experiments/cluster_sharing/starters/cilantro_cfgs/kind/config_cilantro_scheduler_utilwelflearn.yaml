@@ -28,7 +28,8 @@ spec:
         command: [ "python", "/cilantro/demos/cluster_sharing/cilantro_driver.py"]
         args: ["--profiled-info-dir", "/cilantro/demos/cluster_sharing/profiled_oct7",
                "--real-or-dummy", "real", "--cluster-type", "eks",
-               "--env-descr", "exp_env_2", "--policy", "utilwelflearn"
+               "--env-descr", "exp_env_2", "--policy", "utilwelflearn",
+               "--resource_limit", "12"
                ]
 ---
 apiVersion: v1

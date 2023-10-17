@@ -95,6 +95,7 @@ def main():
                         help='Which policy to run.')
     parser.add_argument('--num-iters-for-evo-opt', '-evoiters', type=int,
                         default=DFLT_NUM_EVO_OPT_ITERS, help='Num iters for evolutionary opt.')
+    parser.add_argument('--resource_limit', type=int, help="resource limit")
     args = parser.parse_args()
     if args.real_or_dummy == 'real':
         alloc_expiration_time = REAL_ALLOC_EXPIRATION_TIME
@@ -227,8 +228,13 @@ def main():
             alloc_granularity=framework_manager.get_alloc_granularity(),
             num_iters_for_evo_opt=args.num_iters_for_evo_opt)
     elif args.policy == 'utilwelflearn':
+        if args.resource_limit:
+            resource_limit = args.resource_limit
+        else:
+            resource_limit = framework_manager.get_cluster_resources()
+        logger.info("resouce limit: %d", resource_limit)
         policy = UtilWelfareBanditPolicy(
-            env=env, resource_quantity=framework_manager.get_cluster_resources(),
+            env=env, resource_quantity=resource_limit,
             load_forecaster_bank=load_forecaster_bank, learner_bank=learner_bank,
             alloc_granularity=framework_manager.get_alloc_granularity(),
             num_iters_for_evo_opt=args.num_iters_for_evo_opt)
