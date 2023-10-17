@@ -23,6 +23,6 @@ fi
 
 # Assume tainting has already been done
 kubectl apply -f ./starters/auth_default_user.yaml --kubeconfig ${CONFIG_PATH}
-kubectl apply -f ./starters/dashboard.yaml --kubeconfig ${CONFIG_PATH}
+# kubectl apply -f ./starters/dashboard.yaml --kubeconfig ${CONFIG_PATH}
 kubectl apply -f ./starters/cilantro_cfgs/kind/config_cilantro_scheduler_${POLICY}.yaml --kubeconfig ${CONFIG_PATH}
 

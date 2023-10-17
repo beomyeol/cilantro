@@ -19,7 +19,7 @@ spec:
       containers:
       - name: cilantroscheduler
         # image: public.ecr.aws/cilantro/cilantro:latest
-        image: docker.io/beomyeol/cilantro:latest
+        image: us.icr.io/faro/cilantro:ef28039
         imagePullPolicy: Always
         ports:
         - containerPort: 10000
@@ -29,7 +29,7 @@ spec:
         args: ["--profiled-info-dir", "/cilantro/demos/cluster_sharing/profiled_oct7",
                "--real-or-dummy", "real", "--cluster-type", "eks",
                "--env-descr", "exp_env_2", "--policy", "utilwelflearn",
-               "--resource_limit", "12"
+               "--resource_limit", "32"
                ]
 ---
 apiVersion: v1

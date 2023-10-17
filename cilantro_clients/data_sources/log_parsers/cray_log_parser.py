@@ -61,7 +61,7 @@ class CrayLogParser(BaseLogParser):
         # Compute reward and sigma ------------------------------------------------------
         result_dict['num_events'] = len(e2e_latencies)
         result_dict['num_successes'] = sum([int(elem <= self.slo_latency) for elem in e2e_latencies])
-        # logger.info("num_events: %d, num_successes: %d", result_dict['num_events'], result_dict['num_successes'])
+        # logger.info("num_events: %d, num_successes: %d, slo_latency: %s", result_dict['num_events'], result_dict['num_successes'], self.slo_latency)
         reward, sigma = latency_metrics_from_e2e_latencies(e2e_latencies, self.slo_latency)
         result_dict['reward'] = reward
         if sigma is None:

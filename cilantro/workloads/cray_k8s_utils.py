@@ -43,7 +43,7 @@ def get_cray_head_template_deployment(app_name: str,
     is_workload = "false"
     default_replicas = 1
     # container_image = "public.ecr.aws/cilantro/cray-workloads:latest"
-    container_image = "beomyeol/cray-workloads:latest"
+    container_image = "us.icr.io/faro/cray-workloads:2a1d9e1"
     container_ports = list(RAY_HEAD_PORTS.values())
     container_image_pull_policy = "Always"
     container_command = ["/bin/bash", "-c", "--"]
@@ -136,7 +136,7 @@ def get_cray_server_template_deployment(app_name: str,
     is_workload = "true"
     default_replicas = 1
     # container_image = "public.ecr.aws/cilantro/cray-workloads:latest"
-    container_image = "beomyeol/cray-workloads:latest"
+    container_image = "us.icr.io/faro/cray-workloads:2a1d9e1"
     container_ports = list(RAY_HEAD_PORTS.values())
     container_image_pull_policy = "Always"
     container_command = ["/bin/bash", "-c", "--"]
@@ -195,7 +195,7 @@ def get_cray_client_template_deployment(app_name: str,
                                         cilantro_client_args: Dict[str, str],
                                         *args,
                                         # cilantro_image: str = "public.ecr.aws/cilantro/cilantro:latest",
-                                        cilantro_image: str = "beomyeol/cilantro:latest",
+                                        cilantro_image: str = "us.icr.io/faro/cilantro:ef28039",
                                         **kwargs) -> V1Deployment:
     """
     Defines the deployment for the cray client.
@@ -210,7 +210,7 @@ def get_cray_client_template_deployment(app_name: str,
     is_workload = "false"
     default_replicas = 1
     # container_image = "public.ecr.aws/cilantro/cray-workloads:latest"
-    container_image = "beomyeol/cray-workloads:latest"
+    container_image = "us.icr.io/faro/cray-workloads:2a1d9e1"
     container_ports = []
     container_image_pull_policy = "Always"
 
