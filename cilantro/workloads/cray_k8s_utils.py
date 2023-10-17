@@ -42,7 +42,8 @@ def get_cray_head_template_deployment(app_name: str,
     head_name = app_name + "-head"
     is_workload = "false"
     default_replicas = 1
-    container_image = "public.ecr.aws/cilantro/cray-workloads:latest"
+    # container_image = "public.ecr.aws/cilantro/cray-workloads:latest"
+    container_image = "beomyeol/cray-workloads:latest"
     container_ports = list(RAY_HEAD_PORTS.values())
     container_image_pull_policy = "Always"
     container_command = ["/bin/bash", "-c", "--"]
@@ -134,7 +135,8 @@ def get_cray_server_template_deployment(app_name: str,
     app_name = app_name if app_name else "default"
     is_workload = "true"
     default_replicas = 1
-    container_image = "public.ecr.aws/cilantro/cray-workloads:latest"
+    # container_image = "public.ecr.aws/cilantro/cray-workloads:latest"
+    container_image = "beomyeol/cray-workloads:latest"
     container_ports = list(RAY_HEAD_PORTS.values())
     container_image_pull_policy = "Always"
     container_command = ["/bin/bash", "-c", "--"]
@@ -192,7 +194,8 @@ def get_cray_client_template_deployment(app_name: str,
                                         cilantro_client_cmd: List[str],
                                         cilantro_client_args: Dict[str, str],
                                         *args,
-                                        cilantro_image: str = "public.ecr.aws/cilantro/cilantro:latest",
+                                        # cilantro_image: str = "public.ecr.aws/cilantro/cilantro:latest",
+                                        cilantro_image: str = "beomyeol/cilantro:latest",
                                         **kwargs) -> V1Deployment:
     """
     Defines the deployment for the cray client.
@@ -206,7 +209,8 @@ def get_cray_client_template_deployment(app_name: str,
     client_name = app_name + "-client"
     is_workload = "false"
     default_replicas = 1
-    container_image = "public.ecr.aws/cilantro/cray-workloads:latest"
+    # container_image = "public.ecr.aws/cilantro/cray-workloads:latest"
+    container_image = "beomyeol/cray-workloads:latest"
     container_ports = []
     container_image_pull_policy = "Always"
 

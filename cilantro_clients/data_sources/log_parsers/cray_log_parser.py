@@ -59,6 +59,9 @@ class CrayLogParser(BaseLogParser):
                                             if elem['enqueue_time'] < last_enqueue_time]
         e2e_latencies = completed_latencies_to_consider + incomplete_latencies_to_consider
         # Compute reward and sigma ------------------------------------------------------
+        result_dict['num_events'] = len(e2e_latencies)
+        result_dict['num_successes'] = sum([int(elem <= self.slo_latency) for elem in e2e_latencies])
+        # logger.info("num_events: %d, num_successes: %d", result_dict['num_events'], result_dict['num_successes'])
         reward, sigma = latency_metrics_from_e2e_latencies(e2e_latencies, self.slo_latency)
         result_dict['reward'] = reward
         if sigma is None:

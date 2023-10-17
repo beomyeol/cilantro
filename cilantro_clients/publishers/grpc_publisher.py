@@ -53,6 +53,8 @@ class GRPCPublisher(BasePublisher):
             event_start_time = float(data['event_start_time'])
             event_end_time = float(data['event_end_time'])
             debug = str(data['debug'])
+            num_events = int(data['num_events'])
+            num_successes = int(data['num_successes'])
             msg = utility_update_pb2.UtilityMessage(app_id=self.client_id,
                                                     load=load,
                                                     alloc=alloc,
@@ -60,7 +62,9 @@ class GRPCPublisher(BasePublisher):
                                                     sigma=sigma,
                                                     event_start_time=event_start_time,
                                                     event_end_time=event_end_time,
-                                                    debug=debug)
+                                                    debug=debug,
+                                                    num_events=num_events,
+                                                    num_successes=num_successes)
             logger.debug(f"Publishing msg: {msg}")
             try:
                 stub.PublishUtility(msg,

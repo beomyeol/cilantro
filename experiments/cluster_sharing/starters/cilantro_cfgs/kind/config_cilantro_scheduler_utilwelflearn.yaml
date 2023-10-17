@@ -18,14 +18,17 @@ spec:
       restartPolicy: Never
       containers:
       - name: cilantroscheduler
-        image: public.ecr.aws/cilantro/cilantro:latest
+        # image: public.ecr.aws/cilantro/cilantro:latest
+        image: docker.io/beomyeol/cilantro:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 10000
-        command: [ "python", "/cilantro/demos/exp1/cilantro_driver.py"]
-        args: ["--profiled-info-dir", "/cilantro/demos/exp1/profiled_oct7",
+        # command: ["/bin/bash", "-c", "--"]
+        # args: ['trap : TERM INT; sleep infinity & wait;']
+        command: [ "python", "/cilantro/demos/cluster_sharing/cilantro_driver.py"]
+        args: ["--profiled-info-dir", "/cilantro/demos/cluster_sharing/profiled_oct7",
                "--real-or-dummy", "real", "--cluster-type", "eks",
-               "--env-descr", "exp_env_1", "--policy", "utilwelflearn"
+               "--env-descr", "exp_env_2", "--policy", "utilwelflearn"
                ]
 ---
 apiVersion: v1

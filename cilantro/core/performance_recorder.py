@@ -44,6 +44,8 @@ class PerformanceRecorder:
         self._curr_total_alloc = 0
         self._curr_total_sq_alloc = 0
         self._curr_total_time = 0
+        self._curr_total_num_events = 0
+        self._curr_total_num_successes = 0
 
     def set_entitlement(self, entitlement):
         """ Set entitlement. """
@@ -64,7 +66,7 @@ class PerformanceRecorder:
     def fetch_data_and_update_history(self):
         """ fetch data and update history. """
         new_data, new_time_stamp = self.data_logger.get_data(
-            fields=['alloc', 'reward', 'load', 'event_end_time', 'event_start_time'],
+            fields=['alloc', 'reward', 'load', 'event_end_time', 'event_start_time', 'num_events', 'num_successes'],
             start_time_stamp=self._curr_time_stamp, end_time_stamp=None)
         logger.debug('Received %d new data in %s.', len(new_data), self.app_id)
         if new_data:
@@ -97,6 +99,8 @@ class PerformanceRecorder:
         total_alloc_per_unit_load = 0
         total_sq_alloc_per_unit_load = 0
         total_time = 0
+        total_num_events = 0
+        total_num_successes = 0
         for dat in data_batch:
             curr_event_time = dat['event_end_time'] - dat['event_start_time']
             total_reward += dat['reward'] * curr_event_time
@@ -111,6 +115,8 @@ class PerformanceRecorder:
             total_alloc_per_unit_load += (dat['alloc']/dat['load']) * curr_event_time
             total_sq_alloc += ((dat['alloc']/dat['load']) ** 2) * curr_event_time
             total_time += curr_event_time
+            total_num_events += dat['num_events']
+            total_num_successes += dat['num_successes']
         ret = {'total_reward': total_reward,
                'total_sq_reward': total_sq_reward,
                'total_util': total_util,
@@ -122,6 +128,8 @@ class PerformanceRecorder:
                'total_alloc_per_unit_load': total_alloc_per_unit_load,
                'total_sq_alloc_per_unit_load': total_sq_alloc_per_unit_load,
                'total_time': total_time,
+               'total_num_events': total_num_events,
+               'total_num_successes': total_num_successes,
               }
         return ret
 
@@ -132,6 +140,8 @@ class PerformanceRecorder:
                 'mean_util': 0, 'util_std': 0,
                 'mean_load': 0, 'load_std': 0,
                 'mean_alloc': 0, 'alloc_std': 0,
+                'total_num_events': 0,
+                'total_num_successes': 0,
                 'total_time': 0}
 
     def _get_metrics_from_curr_status(self):
@@ -154,6 +164,8 @@ class PerformanceRecorder:
                 'mean_util': mean_util, 'util_std': util_std,
                 'mean_load': mean_load, 'load_std': load_std,
                 'mean_alloc': mean_alloc, 'alloc_std': alloc_std,
+                'total_num_events': self._curr_total_num_events,
+                'total_num_successes': self._curr_total_num_successes,
                 'total_time': self._curr_total_time}
 
     def _compute_updated_util_and_return_new_metrics(self, fetch_new_data=False):
@@ -173,6 +185,8 @@ class PerformanceRecorder:
             self._curr_total_sq_load += metrics_for_new_batch['total_sq_load']
             self._curr_total_alloc += metrics_for_new_batch['total_alloc']
             self._curr_total_sq_alloc += metrics_for_new_batch['total_sq_alloc']
+            self._curr_total_num_events += metrics_for_new_batch['total_num_events']
+            self._curr_total_num_successes += metrics_for_new_batch['total_num_successes']
         else:
             metrics_for_new_batch = None
         return self._get_metrics_from_curr_status(), metrics_for_new_batch
@@ -196,6 +210,8 @@ class PerformanceRecorder:
         self._curr_total_sq_load = metrics_for_all_data['total_sq_load']
         self._curr_total_alloc = metrics_for_all_data['total_alloc']
         self._curr_total_sq_alloc = metrics_for_all_data['total_sq_alloc']
+        self._curr_total_num_events = metrics_for_all_data['total_num_events']
+        self._curr_total_num_successes = metrics_for_all_data['total_num_successes']
         return self._get_metrics_from_curr_status()
 
     def compute_recent_util(self, num_recent_event_logs=-1, fetch_new_data=False):
@@ -224,6 +240,8 @@ class PerformanceRecorder:
                 'mean_util': mean_util, 'util_std': util_std,
                 'mean_load': mean_load, 'load_std': load_std,
                 'mean_alloc': mean_alloc, 'alloc_std': alloc_std,
+                'total_num_events': metrics['total_num_events'],
+                'total_num_successes': metrics['total_num_successes'],
                 'total_time': self._curr_total_time}
 
 
@@ -345,9 +363,10 @@ class PerformanceRecorderBank(Bank):
             all_allocs.append(results['mean_alloc'])
             all_loads.append(results['mean_load'])
             curr_app_str = \
-                '%s: util=%0.3f, rew=%0.3f alloc=%0.3f, load=%0.3f, ud=%0.3f, time=%0.3f'%(
+                '%s: util=%0.3f, rew=%0.3f alloc=%0.3f, load=%0.3f, ud=%0.3f, tne=%d, tns=%d, time=%0.3f'%(
                     tag, results['mean_util'], results['mean_reward'], results['mean_alloc'],
-                    results['mean_load'], self.get(tag).unit_demand, results['total_time'])
+                    results['mean_load'], self.get(tag).unit_demand, results['total_num_events'],
+                    results['total_num_successes'], results['total_time'])
             leaf_utils_descr_strs.append(curr_app_str)
         leaf_utils_descr = ', '.join(leaf_utils_descr_strs)
         results = {'avg_util': (np.mean(all_utils), np.std(all_utils)),

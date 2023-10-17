@@ -30,6 +30,8 @@ def generate_env(env_descr, cluster_type, real_or_dummy):
         env = generate_env_profiling_env1(real_or_dummy)
     elif env_descr == 'exp_env_1':
         env = generate_env_exp_env_1(real_or_dummy)
+    elif env_descr == 'exp_env_2':
+        env = generate_env_exp_env_2(real_or_dummy)
     elif env_descr == 'as_db1':
         env = generate_as_db1(real_or_dummy)
     elif env_descr == 'as_prs':
@@ -146,15 +148,18 @@ def get_craysleep_node(node_name, slo_latency, slo_thresh, slo_util_scaling, rea
 
 def get_craypredserv_node(node_name, slo_latency, slo_thresh, slo_util_scaling, real_or_dummy):
     """ Returns a prediction serving node. """
+    idx = int(node_name[node_name.rfind("j")+1:]) - 1
     workload_info = {
         'cray_client_override_args': {
             "--cray-utilfreq": "10",
             "--cray-workload-type": "predserv_task",
-            "--serve-chunk-size": "4",
+            "--serve-chunk-size": "1",
             "--sleep-time": "0.0",
             "--trace-scalefactor": "1.0",
-            "--trace-path": "/cray_workloads/traces/twit-b1000-n88600.csv",
-            "--ps-data-path": "/cray_workloads/train_data/news_popularity.p",
+            # "--trace-path": "/cray_workloads/traces/twit-b1000-n88600.csv",
+            # "--ps-data-path": "/cray_workloads/train_data/news_popularity.p",
+            "--trace-path": f"/cray_workloads/traces/serve-cluster{idx}.csv",
+            "--ps-data-path": "/cray_workloads/train_data/image.jpg",
             "--ps-model-path": "/cray_workloads/train_data/news_rfr.p",
          },
         # Args to cilantro client. Passed onto cray_to_grpc_driver.py.
@@ -351,6 +356,33 @@ def generate_env_exp_env_1(real_or_dummy):
                 (0.95, 'sqrt')]
     return generate_env_exp_env_template(real_or_dummy, db0_slos, db1_slos, mlt_slos, prs_slos)
 
+def generate_env_exp_env_2(real_or_dummy):
+    """ Creates experimental environment 2. """
+    prs_slos = [(0.99, 'linear'),
+                (0.99, 'linear'),
+                (0.99, 'linear')]
+    children_list = []
+    prefix_slo_dict = {
+        'prs': (prs_slos,
+                lambda name, thresh, scaling: get_craypredserv_node(node_name=name, slo_latency=0.72,
+                                                                    slo_thresh=thresh,
+                                                                    slo_util_scaling=scaling,
+                                                                    real_or_dummy=real_or_dummy)),
+        }
+    # Crate list of children ---------------------------------------------------------
+    for key, (slo_list, job_constructor) in prefix_slo_dict.items():
+        key_counter = 0
+        for slo_val, slo_util_scaling in slo_list:
+            key_counter += 1
+            job_name = key + 'j' + str(key_counter)
+            job_node = job_constructor(job_name, slo_val, slo_util_scaling)
+            children_list.append(job_node)
+    # Create environment -------------------------------------------------------------
+    weights = [1] * len(children_list)
+    root = InternalNode('root')
+    root.add_children(children_list, weights)
+    env = TreeEnvironment(root, 1)
+    return env
 
 # auto-scaling environments -------------------------------------------------------------------
 def generate_as_db1(real_or_dummy):

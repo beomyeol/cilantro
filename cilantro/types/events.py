@@ -80,6 +80,8 @@ class UtilityUpdateEvent(BaseEvent):
                  event_start_time: float = 1,
                  event_end_time: float = 1,
                  timestamp: float = None,
+                 num_events: int = 0,
+                 num_successes: int = 0,
                  event_type: EventTypes = EventTypes.UTILITY_UPDATE,
                  debug: str = ""):
         """
@@ -101,13 +103,16 @@ class UtilityUpdateEvent(BaseEvent):
         self.event_start_time = event_start_time
         self.event_end_time = event_end_time
         self.debug = debug
+        self.num_events = num_events
+        self.num_successes = num_successes
         super().__init__(timestamp, event_type)
 
     def __repr__(self):
         """ representation. """
         return f"UtilityUpdateEvent, app: {self.app_path}, load: {self.load}, " + \
                f"reward: {self.reward}," + \
-               f"alloc: {self.alloc}, sigma: {self.sigma}, type:{self.event_type}, debug: {self.debug}"
+               f"alloc: {self.alloc}, sigma: {self.sigma}, type:{self.event_type}, debug: {self.debug}," +\
+               f"num_events: {self.num_events}, num_successes: {self.num_successes}"
 
     def __dict__(self):
         """ dictionary. """
@@ -118,7 +123,9 @@ class UtilityUpdateEvent(BaseEvent):
                 'sigma': self.sigma,
                 'event_start_time': self.event_start_time,
                 'event_end_time': self.event_end_time,
-                'debug': self.debug
+                'debug': self.debug,
+                'num_events': self.num_events,
+                'num_successes': self.num_successes
         }
 
 

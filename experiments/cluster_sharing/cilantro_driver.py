@@ -73,7 +73,8 @@ SLEEP_TIME_BETWEEN_TRAINING = 5
 
 # For logging and saving results ----------------------------------------
 SCRIPT_TIME_STR = datetime.now().strftime('%m%d%H%M%S')
-REPORT_RESULTS_EVERY = 60 * 4
+# REPORT_RESULTS_EVERY = 60 * 4
+REPORT_RESULTS_EVERY = 60
 # REPORT_RESULTS_EVERY = 17
 DFLT_NUM_EVO_OPT_ITERS = 4000
 
@@ -159,7 +160,7 @@ def main():
         # Create the data logger ------------------------------------------------------------
         # In practice, we might have to compute sigma from other raw metrics.
         data_logger = SimpleDataLogger(
-            leaf_path, ['load', 'alloc', 'reward', 'sigma', 'event_start_time', 'event_end_time'],
+            leaf_path, ['load', 'alloc', 'reward', 'sigma', 'event_start_time', 'event_end_time', 'num_events', 'num_successes'],
             index_fld='event_start_time', max_inmem_table_size=MAX_INMEM_TABLE_SIZE,
             workload_type=leaf.get_workload_info('workload_type'))
         data_logger_bank.register(leaf_path, data_logger)

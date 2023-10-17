@@ -13,7 +13,7 @@ from cilantro.types.events import UtilityUpdateEvent
 
 logger = logging.getLogger(__name__)
 
-UTILITY_UPDATE_FIELDS = ['load', 'alloc', 'reward', 'sigma', 'event_start_time', 'event_end_time', 'debug']
+UTILITY_UPDATE_FIELDS = ['load', 'alloc', 'reward', 'sigma', 'event_start_time', 'event_end_time', 'debug', 'num_events', 'num_successes']
 
 class UtilityMessagingServicer(utility_update_pb2_grpc.UtilityMessagingServicer):
     # Implements the GRPC Servicer for utility messages from clients
@@ -34,6 +34,8 @@ class UtilityMessagingServicer(utility_update_pb2_grpc.UtilityMessagingServicer)
                                    sigma=request.sigma,
                                    event_start_time=request.event_start_time,
                                    event_end_time=request.event_end_time,
+                                   num_events=request.num_events,
+                                   num_successes=request.num_successes,
                                    timestamp=time.time(),
                                    debug=request.debug)
         self.event_queues.put_nowait(event)
