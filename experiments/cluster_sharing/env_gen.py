@@ -358,9 +358,7 @@ def generate_env_exp_env_1(real_or_dummy):
 
 def generate_env_exp_env_2(real_or_dummy):
     """ Creates experimental environment 2. """
-    prs_slos = [(0.99, 'linear'),
-                (0.99, 'linear'),
-                (0.99, 'linear')]
+    prs_slos = [(0.99, 'linear') for _ in range(10)]
     children_list = []
     prefix_slo_dict = {
         'prs': (prs_slos,
